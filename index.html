@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+
+<!--This is the first webpage I've coded from scratch in like... two years. God help us all.-->
+
+<html>
+	<head>
+	
+		<title>MayCrate Redux</title>
+		<meta name = "description" content = "Crates from the BTWiverse keep apeparing. We have to do something.">
+		<meta name = "keywords" content = "May,ItsMayBTW,MayCrate,FantasticHaz,Gingerfork,FlamingYeti,Crates,GingerCrate,Ginger,Loot,Crate">
+		<meta name="author" content="Harry Wright,FantasticHaz">
+		<meta charset="UTF-8">
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+		
+	</head>
+	
+	<body>
+	
+		<link rel="stylesheet" href="Crate CSS.css">
+		<div> <!--Titles-->
+			<div class = "box" style = "float: right; width: auto;"> <!--Legend-->
+				<ul style = "padding: 0px; font: 10px Bahnschrift, sans-serif;">
+					<li style = "color: yellow; padding: 0px;">Mythic</li>
+					<li style = "color: brown; padding: 0px;">Legendary</li>
+					<li style = "color: purple; padding: 0px;">Epic</li>
+					<li style = "color: blue; padding: 0px;">Rare</li>
+					<li style = "color: green; padding: 0px;">Uncommon</li>
+					<li style = "color: black; padding: 0px;">Common</li>
+				<ul>
+			</div>
+			<h1 id = "title" onclick = "Debug()">MayCrate <b>Redux</b></h1>
+			<h2 id = "subtitle">Crates from the BTWiverse keep appearing. You have to do something. Open crates. Get items. Save the future.</h2>
+		</div>
+		
+		<div> <!--Body-->
+		
+			<div class = "box"> <!--Crates-->
+				<h3><b>Crates</b></h3>
+				<ul>
+					<li id = "availableCrates">Available Crates:</li>
+					<button id = "openCratesButton" onclick = "OpenCrates(false)" style = "float: left; margin-right: 4px;"><b>Open All Crates</b></button>
+					<button id = "customOpenButton" onclick = "OpenCrates(true)" style = "float: left;"><b>Open 1 Crate</b></button>
+					<input type = "number" id = "customCounter" name = "customCounter" value = "1" min = "0" step = "10" onchange = "UpdateCustomSell()" style = "width: 60px; margin: 0px;">
+				</ul>
+				<h3><b>Coins</b></h3>
+					<ul>
+						<li id = "numberOfCoins">Coins:</li>
+						<li id = "coinsPerClick">Coins/click:</li>
+						<li id = "coinsPerSecond">Coins/second:</li>
+						<button onclick = "Click(false)"><b>Click</b></button>
+						<input type = "checkbox" id = "autoClicker" name = "autoClicker" value = "autoClicker" onclick = "ToggleAutoClick()">
+						<label for = "autoClicker">Auto-Click</label>
+					</ul>
+			</div>
+		
+			<div style = "float: right; width: 30%;"> <!--Right Column-->
+				<div class = "box" style = "float: inherit; width: 97%;"> <!--Shop-->
+					<h3><b>Shop</b></h3>
+					<button id = "crateBuyButton" onclick = "BuyCrate()"><b>Buy Crate</b></button>
+					<button onclick = "BuyAll()"><b>Buy All</b></button>
+					<input type = "checkbox" id = "autoBuy" name = "autoBuy" value = "autoBuy" checked = "true" onclick = "ToggleAutoBuy()">
+					<label for = "autoBuy">Auto-Buy</label>
+					<h3 title = "Sell prices go down the more you sell of a certain rarity. Hoarding crates causes prices to rise again"><b>Sell [?]</b></h3>
+					<select id = "sellDropdown" onchange = "UpdateShop()"></select>
+					<br>
+					<input type = "number" id = "sellCounter" name = "sellCounter" min = "0" step = "1" onchange = "UpdateSellPrice()" style = "width: 60px; margin: 0px; float: left;">
+					<button onclick = "Sell()" style = "float: left;"><b>Sell</b></button>
+					<p id = "sellPrice" style = "float: left; padding: 2px;">Coins</p>
+					<h3 style = "clear: left;" title = "Trade-Ins arrive as quests that once completed give you a special reward. They require that quantity of each item in the specified rarity"><b>Trade-In [?]</b></h3>
+					<button onclick = "Trade(0)" style = "float: left; clear: left;" id = "tradeButton0"><b>Trade</b></button>
+					<p style = "float: left; padding: 2px;" id = "quest0">Quest 1</p>
+					<button onclick = "Trade(1)" style = "float: left; clear: left;" id = "tradeButton1"><b>Trade</b></button>
+					<p style = "float: left; padding: 2px;" id = "quest1">Quest 2</p>
+					<button onclick = "Trade(2)" style = "float: left; clear: left;" id = "tradeButton2"><b>Trade</b></button>
+					<p style = "float: left; padding: 2px;" id = "quest2">Quest 3</p>
+					<button onclick = "Trade(3)" style = "float: left; clear: left;" id = "tradeButton3"><b>Trade</b></button>
+					<p style = "float: left; padding: 2px; color: #c46abc;" id = "quest3"><i>Maybe with enough crates...</i></p>
+					<img src = "wheel0.png" style = "float: left; padding-left: 3px; display: none;" width = 22 height = 22 id = "wheel0">
+					<button onclick = "Trade(4)" style = "float: left; clear: left;" id = "tradeButton4"><b>Trade</b></button>
+					<p style = "float: left; padding: 2px; color: #c46abc;" id = "quest4"><i>...you'll attract some more trade-ins...</i></p>
+					<img src = "wheel1.png" style = "float: left; padding-left: 3px; display: none;" width = 22 height = 22 id = "wheel1">
+				</div>
+				
+				<div class = "box" style = "float: inherit; clear: right; width: 97%;"> <!--Unlocks-->
+					<h3 title = "Each episode is me talking you through and reviewing the Domino's Pizza menu. I don't know why. Not sponsored"><b>Rewards [?]</b></h3>
+					<button id = "ch1Button" onclick = "PlayReward(0)" class = "storyButton"><b>Episode 1</b></button>
+					<button id = "ch2Button" onclick = "PlayReward(1)" class = "storyButton"><b>Episode 2</b></button>
+					<button id = "ch3Button" onclick = "PlayReward(2)" class = "storyButton"><b>Episode 3</b></button>
+					<button id = "ch4Button" onclick = "PlayReward(3)" class = "storyButton" disabled = "true"><b>Episode 4</b></button>
+					<p style = "float: left; padding: 2px;"><b>x1 All Rares</b></p>
+					<button id = "ch5Button" onclick = "PlayReward(4)" class = "storyButton" disabled = "true"><b>Episode 5</b></button>
+					<p style = "float: left; padding: 2px;"><b>x1 All Epics</b></p>
+					<button id = "ch6Button" onclick = "PlayReward(5)" class = "storyButton" disabled = "true"><b>Episode 6</b></button>
+					<p style = "float: left; padding: 2px;"><b>x1 All Legendaries</b></p>
+					<button id = "ch7Button" onclick = "PlayReward(6)" class = "storyButton" disabled = "true"><b>Episode 7</b></button>
+					<p style = "float: left; padding: 2px;"><b>x1 Everything</b></p>
+					<button id = "ch8Button" onclick = "PlayReward(7)" class = "storyButton" disabled = "true"><b>Episode 8</b></button>
+					<p style = "float: left; padding: 2px;"><b>x5 Everything</b></p>
+					<button id = "ch9Button" onclick = "PlayReward(8)" class = "storyButton" disabled = "true"><b>Episode 9</b></button>
+					<p style = "float: left; padding: 2px;"><b>x10 Everything</b></p>
+					<button id = "ch10Button" onclick = "PlayReward(9)" class = "storyButton" disabled = "true"><b>Episode 10</b></button>
+					<p style = "float: left; padding: 2px;"><b>x100 Everything</b></p>
+					<button id = "ch11Button" onclick = "PlayReward(10)" class = "storyButton" disabled = "true"><b>Episode 11</b></button>
+					<p style = "float: left; padding: 2px;"><b>x1,000 Everything</b></p>
+					<button id = "ch12Button" onclick = "PlayReward(11)" class = "storyButton" disabled = "true"><b>Episode 12</b></button>
+					<p style = "float: left; padding: 2px;"><b>x10,000 Everything</b></p>
+					<button id = "postGameButton" onclick = "PlayReward(12 + postGameStage)" class = "storyButton" style = "display: none"><b>The Second End</b></button>
+					<p id = "postGameText" style = "float: left; padding: 2px; display: none;"><b>x1,000,000 Everything</b></p>
+					<button onclick = "StopPlayback()" class = "storyButton" style = "width: auto;"><b>Stop Playback</b></button>
+				</div>
+				
+				<div class = "box" style = "float: inherit; clear: right; width: 97%; overflow: auto"> <!--Stats-->
+					<h3><b>Stats</b></h3>
+					<ul>
+						<li id = "coinsEarned" style = "padding: 2px; margin: 0px;">Coins Earned: </li>
+						<li id = "cratesOpened" style = "padding: 2px; margin: 0px;">Crates Opened: </li>
+						<li id = "itemsObtained" style = "padding: 2px; margin: 0px;">Items Obtained: </li>
+						<li id = "mostCratesOpened" style = "padding: 2px; margin: 0px;">Most Crates Opened: </li>
+						<li id = "sessionsPlayed" style = "padding: 2px; margin: 0px;">Sessions Played: </li>
+						<li id = "timePlayed" style = "padding: 2px; margin: 0px;">Time Played: </li>
+					</ul>
+					<ul>
+						<li id = "mythicsCollected" style = "padding: 2px; margin: 0px; border-left: 2px solid yellow;">Mythics Collected: </li>
+						<li id = "legendariesCollected" style = "padding: 2px; margin: 0px; border-left: 2px solid brown;">Legendaries Collected: </li>
+						<li id = "epicsCollected" style = "padding: 2px; margin: 0px; border-left: 2px solid purple;">Epics Collected: </li>
+						<li id = "raresCollected" style = "padding: 2px; margin: 0px; border-left: 2px solid blue;">Rares Collected: </li>
+						<li id = "uncommonsCollected" style = "padding: 2px; margin: 0px; border-left: 2px solid green;">Uncommons Collected: </li>
+						<li id = "commonsCollected" style = "padding: 2px; margin: 0px; border-left: 2px solid black;">Commons Collected: </li>
+					</ul>
+					<input type = "checkbox" style = "float: left; margin-left: 15px;" id = "bypassRewardMessage" name = "bypassRewardMessage" value = "bypassRewardMessage" onclick = "ToggleBypassRewardMessage()">
+					<label for = "bypassRewardMessage" style = "float: left;">Bypass Reward Message</label>
+					<br>
+					<button onclick = "ResetProgress(0)" style = "float: left; margin-left: 11px;"><b>Reset Progress</b></button>
+					<p id = "versionNumber" style = "float: left; margin-left: 2px;">Version x.x.x</p>
+				</div>
+			</div>
+			
+			<div class = "box" style = "float: right; width: auto;"> <!--New Items-->
+				<h3><b>New!</b></h3>
+				<ul id = "newList">
+					<li style = "padding-right: 16px;"><i>New items will appear here when you open crates</i></li>
+				</ul>
+			</div>
+			
+			<div class = "box" style = "clear: left;"> <!--Inventory-->
+				<h3><b>Inventory</b></h3>
+				<ul id = "inventoryList">
+					<li>Inventory Item</li>
+				</ul>
+			</div>
+			
+			<div id = "footer"> <!--Footer-->
+				<p>© Harry Wright 2023</p>
+				<ul id = "footerList">
+					<li class = "footerListItem"><a href = "https://twitter.com/FantasticHaz">Twitter</a></li>
+					<li class = "footerListItem"><a href = "https://twitch.tv/ItsMayBTW">ItsMayBTW</a></li>
+					<li class = "footerListItem"><a href = "https://discord.gg/CpEmHaK">Discord</a></li>
+				</ul>
+				<form action="https://www.paypal.com/donate" method="post" target="_blank">
+					<input type="hidden" name="hosted_button_id" value="TPELVG4QEB76A" />
+					<input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+					<img alt="" border="0" src="https://www.paypal.com/en_GB/i/scr/pixel.gif" width="1" height="1" />
+				</form>
+				<button id = "consentButton" onclick = "Consent()">I consent to cookies!</button>
+			</div>
+		
+		<script>
+		
+			// Hello MayCrate user. If you're reading this, it probably means you know what you're doing. I, on the other hand, don't know what I'm doing. Well, I kinda know what I'm doing, just not a good way of doing it.
+			// No doubt you're gonna be furious because "Oh no, he should've used a switch statement here but instead he used a-" yeah no I get it, but it's about complexity. The reason MayCrate Redux exists is because
+			// the code in the original original version was terrible. Specifically generating loot, which is why it was so laggy as soon as anyone actually played for five minutes. I don't need to be hyper efficient because this isn't
+			// autopilot software in an aircraft, it's a dumb website made with my own dumb hands. So sure, have fun mocking me and feeling superior, I don't mind, but just keep all of this in mind. Happy nerding!
+			
+			inventoryListHTML = document.getElementById("inventoryList");
+			newListHTML = document.getElementById("newList");
+			
+			availableCratesHTML = document.getElementById("availableCrates");
+			openCratesButtonHTML = document.getElementById("openCratesButton");
+			customCounterHTML = document.getElementById("customCounter");
+			customOpenButtonHTML = document.getElementById("customOpenButton");
+			
+			numberOfCoinsHTML = document.getElementById("numberOfCoins");
+			coinsPerClickHTML = document.getElementById("coinsPerClick");
+			coinsPerSecondHTML = document.getElementById("coinsPerSecond");
+			autoClickerHTML = document.getElementById("autoClicker");
+			
+			crateBuyButtonHTML = document.getElementById("crateBuyButton");
+			autoBuyHTML = document.getElementById("autoBuy");
+			
+			sellDropdownHTML = document.getElementById("sellDropdown");
+			sellCounterHTML = document.getElementById("sellCounter");
+			sellPriceHTML = document.getElementById("sellPrice");
+			sellPriceHTML = document.getElementById("sellPrice");
+			
+			quest0Text = document.getElementById("quest0");
+			quest1Text = document.getElementById("quest1");
+			quest2Text = document.getElementById("quest2");
+			quest3Text = document.getElementById("quest3");
+			quest4Text = document.getElementById("quest4");
+			questTexts = [quest0Text,quest1Text,quest2Text,quest3Text,quest4Text];
+			
+			tradeButton0 = document.getElementById("tradeButton0");
+			tradeButton1 = document.getElementById("tradeButton1");
+			tradeButton2 = document.getElementById("tradeButton2");
+			tradeButton3 = document.getElementById("tradeButton3");
+			tradeButton4 = document.getElementById("tradeButton4");
+			tradeButtons = [tradeButton0,tradeButton1,tradeButton2,tradeButton3,tradeButton4];
+			
+			wheel0 = document.getElementById("wheel0");
+			wheel1 = document.getElementById("wheel1");
+			wheels = [wheel0,wheel1];
+			
+			ch1ButtonHTML = document.getElementById("ch1Button");
+			ch2ButtonHTML = document.getElementById("ch2Button");
+			ch3ButtonHTML = document.getElementById("ch3Button");
+			ch4ButtonHTML = document.getElementById("ch4Button");
+			ch5ButtonHTML = document.getElementById("ch5Button");
+			ch6ButtonHTML = document.getElementById("ch6Button");
+			ch7ButtonHTML = document.getElementById("ch7Button");
+			ch8ButtonHTML = document.getElementById("ch8Button");
+			ch9ButtonHTML = document.getElementById("ch9Button");
+			ch10ButtonHTML = document.getElementById("ch10Button");
+			ch11ButtonHTML = document.getElementById("ch11Button");
+			ch12ButtonHTML = document.getElementById("ch12Button");
+			chapterButtons = [ch1ButtonHTML,ch2ButtonHTML,ch3ButtonHTML,ch4ButtonHTML,ch5ButtonHTML,ch6ButtonHTML,ch7ButtonHTML,ch8ButtonHTML,ch9ButtonHTML,ch10ButtonHTML,ch11ButtonHTML,ch12ButtonHTML];
+			
+			postGameButtonHTML = document.getElementById("postGameButton");
+			postGameTextHTML = document.getElementById("postGameText");
+			
+			mythicsCollectedHTML = document.getElementById("mythicsCollected");
+			legendariesCollectedHTML = document.getElementById("legendariesCollected");
+			epicsCollectedHTML = document.getElementById("epicsCollected");
+			raresCollectedHTML = document.getElementById("raresCollected");
+			uncommonsCollectedHTML = document.getElementById("uncommonsCollected");
+			commonsCollectedHTML = document.getElementById("commonsCollected");
+			coinsEarnedHTML = document.getElementById("coinsEarned");
+			cratesOpenedHTML = document.getElementById("cratesOpened");
+			itemsObtainedHTML = document.getElementById("itemsObtained");
+			mostCratesOpenedHTML = document.getElementById("mostCratesOpened");
+			sessionsPlayedHTML = document.getElementById("sessionsPlayed");
+			timePlayedHTML = document.getElementById("timePlayed");
+			
+			consentButtonHTML = document.getElementById("consentButton");
+			cookieTextHTML = document.getElementById("cookieText");
+			
+			titleHTML = document.getElementById("title");
+			subtitleHTML = document.getElementById("subtitle");
+			
+			versionNumberHTML = document.getElementById("versionNumber");
+			bypassRewardMessageHTML = document.getElementById("bypassRewardMessage");
+			
+			indexPair = [0,0];
+			timerRunning = false;
+			coinsPerSecond = 0
+			
+			audioPlaying = false;
+			waitingToReveal = false;
+			
+			badId = -1;
+			pendingRemoval = -1;
+			failures = [false,false,false,false,false,false];
+			tradeQuestQuantities = [1,2,3,5,10,15,30,50,75,100,150,300,500,1000,2000,3000,5000,10000];
+			sellPrices = [10000,1000,500,30,2,1];
+			sellDecayIncrements = [1,5,20,50,300,5000];
+			rarityColours = ["yellow","brown","purple","blue","green","black"];
+			rarities = ["Mythic","Legendary","Epic","Rare","Uncommon","Common"];
+			rarityPlurals = ["Mythics","Legendaries","Epics","Rares","Uncommons","Commons"];
+			
+			endings = [
+			["The Second End",0,119000],
+			["The Third End",1000000,116000], // One Million
+			["The Fourth End",5000000,122000], // Five Million
+			["The Fifth End",10000000,139000], // Ten Million
+			["The Sixth End",30000000,114000], // Thirty Million
+			["The Seventh End",50000000,190000], // Fifty Million
+			["The Eighth End",100000000,161000], // One Hundred Million
+			["The Ninth End",1000000000,0] // One Billion
+			];
+			
+			/*function Debug() {
+				Consent();
+				SetCrates(numberofCrates + 2000);
+				UpdateCrates();
+			}*/
+			
+			function OnLoad() {
+				LoadVariables()
+				
+				setTimeout(UpdateTimePlayed,1000);
+				sessionsPlayed++;
+				if (consent == true) {
+					SetCookie("sessionsPlayed",sessionsPlayed,720);
+				}
+				UpdateStats("all");
+			
+				for(var i = 0; i < items.length; i++) {
+					for(var j = 0; j < items[i].length; j++) {
+						if (items[i][j][1] < 0) { // Fix bugged inventories
+							items[i][j][1] = 0;
+						}
+					}
+				}
+			
+				LoadRewards();
+				UpdateInventory();
+				UpdateQuests(false);
+				LoadShop();
+				
+				SetCrates(numberofCrates);
+				UpdateCrates();
+				SetCratePrice(cratePrice);
+				
+				if (quests.length > 3) {
+					QuestTick(3);
+					if (quests.length == 5) {
+						QuestTick(4);
+					}
+				}
+				
+				UpdateCoins();
+				SetCoinsPerClick(coinsPerClick);
+				SetCoinsPerSecond(coinsPerSecond);
+				
+				CheckCoinsPerSecond();
+				
+				versionNumberHTML.innerHTML = "MayCrate Redux <b>" + version + "</b>";
+			}
+			
+			function LoadVariables() { // I have no idea if this is how cookies work or if this is how you're supposed to use them.
+				if (GetCookie("numberofCrates") == "") {
+					numberofCrates = 10;
+				} else {
+					numberofCrates = parseInt(GetCookie("numberofCrates"),10);
+				}
+				if (GetCookie("cratePrice") == "") {
+					cratePrice = 30;
+				} else {
+					cratePrice = parseInt(GetCookie("cratePrice"),10);
+				}
+				if (GetCookie("coins") == "") {
+					coins = 20;
+				} else {
+					coins = parseInt(GetCookie("coins"),10);
+				}
+				if (GetCookie("coinsPerClick") == "") {
+					coinsPerClick = 1;
+				} else {
+					coinsPerClick = parseInt(GetCookie("coinsPerClick"),10);
+				}
+				if (GetCookie("autoInterval") == "") {
+					autoInterval = 1000;
+				} else {
+					autoInterval = parseInt(GetCookie("autoInterval"),10);
+				}
+				if (GetCookie("autoBuy") == "") {
+					autoBuy = true;
+				} else {
+					autoBuy = StringToBool(GetCookie("autoBuy"));
+					if (autoBuy == false) {
+						autoBuyHTML.checked = false;
+					}
+				}
+				if (GetCookie("extraCrateChance") == "") {
+					extraCrateChance = 0;
+				} else {
+					extraCrateChance = parseInt(GetCookie("extraCrateChance"),10);
+				}
+				if (GetCookie("extraCoinChance") == "") {
+					extraCoinChance = 0;
+				} else {
+					extraCoinChance = parseInt(GetCookie("extraCoinChance"),10);
+				}
+				if (GetCookie("consent") == "") {
+					consent = false;
+				} else {
+					consent = StringToBool(GetCookie("consent"));
+					consentButtonHTML.style.display = "none";
+				}
+				if (GetCookie("marketRecoveryBoost") == "") {
+					marketRecoveryBoost = 0;
+				} else {
+					marketRecoveryBoost = parseInt(GetCookie("marketRecoveryBoost"));
+				}
+				if (GetCookie("marketRecoveryTarget") == "") {
+					marketRecoveryTarget = 10;
+				} else {
+					marketRecoveryTarget = parseInt(GetCookie("marketRecoveryTarget"));
+				}
+				if (GetCookie("crateRedemption") == "") {
+					crateRedemption = 0;
+				} else {
+					crateRedemption = parseInt(GetCookie("crateRedemption"));
+				}
+				if (GetCookie("progressionMultiplier") == "") {
+					progressionMultiplier = 0.5;
+				} else {
+					progressionMultiplier = parseInt(GetCookie("progressionMultiplier"));
+				}
+				if (GetCookie("postGameStage") == "") {
+					postGameStage = -1;
+				} else {
+					postGameStage = parseInt(GetCookie("postGameStage"),10);
+				}
+				if (GetCookie("qazwsxCount") == "") {
+					qazwsxCount = 0;
+				} else {
+					qazwsxCount = parseInt(GetCookie("qazwsxCount"),10);
+				}
+				if (GetCookie("cratesSinceLastQuest") == "") {
+					cratesSinceLastQuest = 0;
+				} else {
+					cratesSinceLastQuest = parseInt(GetCookie("cratesSinceLastQuest"),10);
+				}
+				if (GetCookie("cratesUntilNextQuest") == "") {
+					cratesUntilNextQuest = RandInt(10000,100000);
+				} else {
+					cratesUntilNextQuest = parseInt(GetCookie("cratesUntilNextQuest"),10);
+				}
+				if (GetCookie("coinsEarned") == "") {
+					coinsEarned = 0;
+				} else {
+					coinsEarned = parseInt(GetCookie("coinsEarned"),10);
+				}
+				if (GetCookie("cratesOpened") == "") {
+					cratesOpened = 0;
+				} else {
+					cratesOpened = parseInt(GetCookie("cratesOpened"),10);
+				}
+				if (GetCookie("itemsObtained") == "") {
+					itemsObtained = 0;
+				} else {
+					itemsObtained = parseInt(GetCookie("itemsObtained"),10);
+				}
+				if (GetCookie("mostCratesOpened") == "") {
+					mostCratesOpened = 0;
+				} else {
+					mostCratesOpened = parseInt(GetCookie("mostCratesOpened"),10);
+				}
+				if (GetCookie("sessionsPlayed") == "") {
+					sessionsPlayed = 0;
+				} else {
+					sessionsPlayed = parseInt(GetCookie("sessionsPlayed"),10);
+				}
+				if (GetCookie("timePlayed") == "") {
+					timePlayed = 0;
+				} else {
+					timePlayed = parseInt(GetCookie("timePlayed"),10);
+				}
+				if (GetCookie("progressionMultiplier") == "") {
+					progressionMultiplier = 0.5;
+				} else {
+					progressionMultiplier = GetCookie("progressionMultiplier");
+				}
+				if (GetCookie("bypassRewardMessage") == "") {
+					bypassRewardMessage = false;
+				} else {
+					bypassRewardMessage = GetCookie("bypassRewardMessage");
+					bypassRewardMessage = (bypassRewardMessage === "true");
+					bypassRewardMessageHTML.checked = bypassRewardMessage;
+				}
+				if (GetCookie("version") == "" || GetCookie("version") == "undefined") {
+					version = "1.4";
+					SetCookie("version",version,720);
+				} else {
+					version = GetCookie("version");
+					if (version != "1.4") {
+						version = "1.4";
+					}
+				}
+				if (GetCookieString("items") == "") {
+					items = [
+					[["Chillbot 9000000 Gunpla Kit",0,0],["Steve Squishmallow®",0,0],["Crow & Bee Vinyl",0,0]], // Mythic
+					[["ItsMayBTW Statuette",0,0],["FantasticHaz Keyboard Caps",0,0],["Demesneblip Metal Straw",0,0],["Fran Bobblehead",0,0],["Maria Fridge Magnet Set",0,0]], // Legendary
+					[["Barry The Colour Changing Mug",0,0],["PNG Tuber Eyeshadow Palette",0,0],["Being John Malkovich (Collector's Edition)",0,0],["50 Chicken Nugget Coupon",0,0],["Frederick Fazbearius Playset",0,0],["Harry's Quiz Night Board Game",0,0]], // Epic
+					[["Team Supreme Jersey",0,0],["ItsMayBTW Mixtape",0,0],["How To Eat A Plane: The Complete Guide",0,0],["Dangerwatch: The Card Game",0,0],["Power Pup Collector Card (Shiny)",0,0],["May's Open Majors Banner",0,0],["\"I Survived the ItsMayBTW Subathon\" T-Shirt",0,0]], // Rare
+					[["Steven Pugsworth Pin Badge",0,0],["Ronnie's Prangles",0,0],["Clive the Frog Origami Kit",0,0],["Hatsune Miku® Top Trumps®",0,0],["Whirly Dirly Windmill",0,0],["Long Chip (Pack of 8)",0,0],["Jennifer M Mask",0,0],["Stream Tags Dice Set",0,0],["Ocean Man Documentary (DVD)",0,0]], // Uncommon
+					[["Slice of Baking Stream Cake",0,0],["Chocolate Shoe",0,0],["'Tales From The Discord' Comics",0,0],["Handwritten Poem",0,0],["Tarot Card",0,0],["Playing Favourites Poster",0,0],["Amba Pet (Redeemable in Mayve Online™)",0,0],["Power Pup Collector Card",0,0]] // Common
+					];
+				} else {
+					items = GetCookieString("items");
+				}
+				if (GetCookieString("rewardProgress") == "") {
+					rewardProgress = [true,true,true,false,false,false,false,false,false,false,false,false];
+				} else {
+					rewardProgress = GetCookieString("rewardProgress");
+					for(var i = 0; i < rewardProgress.length; i++) {
+						rewardProgress[i] = StringToBool(rewardProgress[i]);
+					}
+				}
+				if (GetCookieString("raritiesCollected") == "") {
+					raritiesCollected = [0,0,0,0,0,0];
+				} else {
+					raritiesCollected = GetCookieString("raritiesCollected");
+				}
+				if (GetCookieString("sellModifiers") == "") {
+					sellModifiers = [1,1,1,1,1,1];
+				} else {
+					sellModifiers = GetCookieString("sellModifiers");
+				}
+				if (GetCookieString("sellDecayValues") == "") {
+					sellDecayValues = [0,0,0,0,0,0];
+				} else {
+					sellDecayValues = GetCookieString("sellDecayValues");
+				}
+				if (GetCookieString("questTicks") == "") {
+					questTicks = [0,0];
+				} else {
+					questTicks = GetCookieString("questTicks");
+				}
+				if (GetCookieString("quests") == "") {
+					quests = [[[0,0],[0,0]],[[0,0],[0,0]],[[0,0],[0,0]]];
+					GenerateQuest(0)
+					GenerateQuest(1)
+					GenerateQuest(2)
+				} else {
+					quests = GetCookieString("quests");
+					if (quests.length == 4) {
+						quests.splice(3,1);
+					} else if (quests.length == 5) {
+						quests.splice(4,1);
+					}
+				}
+			}
+			
+			
+			
+			function OpenCrates(custom) {
+				if (consent == true) {
+					if (custom == false) {
+						if (numberofCrates < 500000000) {
+							crateTickNumber = numberofCrates;
+							SetCrates(0);
+						} else {
+							crateTickNumber = 500000000;
+							SetCrates(numberofCrates - crateTickNumber);
+						}
+					} else {
+						if (parseInt(customCounterHTML.value,10) <= numberofCrates) {
+							crateTickNumber = parseInt(customCounterHTML.value,10);
+							SetCrates(numberofCrates - crateTickNumber);
+						} else {
+							crateTickNumber = numberofCrates;
+							SetCrates(0);
+						}
+					}
+					if (crateTickNumber > mostCratesOpened) {
+						mostCratesOpened = crateTickNumber;
+						SetCookie("mostCratesOpened",mostCratesOpened,720);
+						UpdateStats("mostCratesOpened");
+					}
+					if (crateTickNumber > 0) {
+						cratesOpened += crateTickNumber;
+						SetCookie("cratesOpened",cratesOpened,720);
+						specialFound = 0;
+						numberOfItems = RandInt(4 * crateTickNumber,7 * crateTickNumber);
+						for(var i = 0; i < numberOfItems; i++) {
+							rarityValue = RandInt(1,100001);
+							if (rarityValue == 1) { // Mythic
+								rarity = 0;
+								specialChance = RandInt(1,1000001);
+								if (specialChance == 1) {
+									qazwsxCount++;
+									SetCookie("qazwsxCount",qazwsxCount,720);
+									specialFound++;
+								}
+							} else if (rarityValue >= 2 && rarityValue <= 30) { // Legendary
+								rarity = 1;
+							} else if (rarityValue >= 31 && rarityValue <= 300) { // Epic
+								rarity = 2;
+							} else if (rarityValue >= 301 && rarityValue <= 5000) { // Rare
+								rarity = 3;
+							} else if (rarityValue >= 5001 && rarityValue <= 30000) { // Uncommon
+								rarity = 4;
+							} else if (rarityValue >= 30001 && rarityValue <= 100000) { // Common
+								rarity = 5;
+							}
+							raritiesCollected[rarity]++;
+							randomItem = RandInt(0,items[rarity].length);
+							items[rarity][randomItem][1]++;
+							items[rarity][randomItem][2]++;
+							itemsObtained++;
+						}
+						SetCookieString("raritiesCollected",raritiesCollected,720);
+						SetCookie("itemsObtained",itemsObtained,720);
+						newString = "";
+						if (specialFound > 0) {
+							newString += "<li style = \"color: brown\">May Pencil Holder x" + NumberToString(specialFound) + "</li>";
+							specialFound = 0;
+						}
+						for (var i = 0; i < items.length; i++) {
+							for(var j = 0; j < items[i].length; j++) {
+								if (items[i][j][2] > 0) {
+									newString += "<li style = \"color:" + rarityColours[i] + "\">" + items[i][j][0] + " x" + NumberToString(items[i][j][2]) + "</li>";
+									items[i][j][2] = 0;
+								}
+							}
+						}
+						newListHTML.innerHTML = newString;
+						SetCookie("numberofCrates",numberofCrates,720);
+						UpdateInventory();
+						UpdateCrates();
+						UpdateStats("all");
+					}
+				} else {
+					NoConsent();
+				}
+			}
+			
+			function Click(auto) {
+				if (consent == true) {
+					SetCoins(coins + coinsPerClick);
+					if (RandInt(1,1001) <= (extraCoinChance * 10)) {
+						SetCoins(coins + 1);
+						coinsPerSecond++;
+					}
+					coinsPerSecond += coinsPerClick;
+					UpdateCoins();
+					if (auto == true) {
+						autoTimer = setTimeout(Click,autoInterval,true);
+					}
+				} else {
+					NoConsent();
+				}
+			}
+			
+			function BuyCrate() {
+				if (consent == true) {
+					if (coins >= cratePrice) {
+						coins -= cratePrice
+						SetCrates(numberofCrates + 1)
+						if (RandInt(1,1001) <= (extraCrateChance * 10)) {
+							SetCrates(numberofCrates + 1)
+						}
+					}
+					UpdateCrates();
+					UpdateCoins();
+				} else {
+					NoConsent();
+				}
+			}
+			
+			function BuyAll() {
+				if (consent == true) {
+					newCrates = 0;
+					bonusCrates = 0;
+					newCrates = Math.floor(coins / cratePrice);
+					coins = coins % cratePrice;
+					for (i = 0; i < newCrates; i++) {
+						if (RandInt(1,1001) <= (extraCrateChance * 10)) {
+							bonusCrates++;
+						}
+					}
+					SetCrates(numberofCrates + newCrates + bonusCrates);
+					SetCookie("numberofCrates",numberofCrates,720);
+					SetCookie("coins",coins,72);
+					UpdateCoins();
+					UpdateCrates();
+				} else {
+					NoConsent();
+				}
+			}
+			
+			function Sell() {
+				if (consent == true) {
+					if (items[indexPair[0]][indexPair[1]][1] >= parseInt(sellCounterHTML.value,10)) {
+						if (parseInt(sellCounterHTML.value,10) > 0) {
+							newCoins = (sellPrices[indexPair[0]] * parseInt(sellCounterHTML.value,10)) * sellModifiers[indexPair[0]];
+							SetCoins(Math.floor(coins + newCoins));
+							items[indexPair[0]][indexPair[1]][1] -= parseInt(sellCounterHTML.value,10);
+							sellDecayValues[indexPair[0]] += parseInt(sellCounterHTML.value,10);
+							while (sellDecayValues[indexPair[0]] >= sellDecayIncrements[indexPair[0]]) { // Adjust sell prices
+								if (sellModifiers[indexPair[0]] - 0.05 >= 0.05) {
+									sellModifiers[indexPair[0]] = parseFloat((sellModifiers[indexPair[0]] - 0.05).toFixed(2));
+									sellDecayValues[indexPair[0]] -= sellDecayIncrements[indexPair[0]];
+								} else {
+									sellModifiers[indexPair[0]] = 0.05;
+									sellDecayValues[indexPair[0]] = 0;
+								}
+							}
+							SetCookieString("sellModifiers",sellModifiers,720);
+							if (newCoins > 0) {
+								marketRecoveryTarget = Math.floor(newCoins * 2);
+							} else {
+								marketRecoveryTarget = 10;
+							}
+							crateRedemption = 0;
+							LoadShop();
+							UpdateCoins();
+							SetCookie("marketRecoveryTarget",marketRecoveryTarget,720);
+							SetCookie("crateRedemption",crateRedemption,720);
+						}
+						
+						sellDropdownOptions = sellDropdownHTML.options // Move on down the sell list
+						if (sellDropdownOptions.selectedIndex + 1 < sellDropdownOptions.length) {
+							if (indexPair[1] < items[indexPair[0]].length - 1) {
+								sellDropdownOptions.selectedIndex += 1;
+							} else {
+								sellDropdownOptions.selectedIndex += 2;
+							}
+						}
+						
+						UpdateInventory();
+						UpdateShop();
+					}
+				} else {
+					NoConsent();
+				}
+			}
+			
+			function Trade(id) {
+				if (consent == true) {
+					if (CanTrade(id)) {
+						if (id == 0) {
+							if (autoInterval - 10 >= 1) {
+								autoInterval -= 10;
+								QuestComplete(id,"-10ms Auto-Click Interval!");
+								SetCookie("autoInterval",autoInterval,720);
+							} else {
+								autoInterval = 1;
+								coinExchange = QuestToMoney(id);
+								SetCoins(coinExchange);
+								QuestComplete(id,"+" + NumberToString(coinExchange) + " Coins!");
+								SetCookieString("quests",quests,720);
+							}
+						} else if (id == 1) {
+							if (RandInt(0,2) == 0) {
+								if (extraCoinChance + 5 <= 50) {
+									extraCoinChance += 5;
+									QuestComplete(id,"+5% Extra Coin Chance!");
+									SetCookie("extraCoinChance",extraCoinChance,720);
+								} else {
+									coinExchange = QuestToMoney(id);
+									SetCoins(coinExchange);
+									QuestComplete(id,"+" + NumberToString(coinExchange) + " Coins!");
+								}
+							} else {
+								if (extraCrateChance + 5 <= 50) {
+									extraCrateChance += 5;
+									QuestComplete(id,"+5% Extra Crate Chance!");
+									SetCookie("extraCrateChance",extraCrateChance,720);
+								} else {
+									coinExchange = QuestToMoney(id);
+									SetCoins(coinExchange);
+									QuestComplete(id,"+" + NumberToString(coinExchange) + " Coins!");
+								}
+							}
+						} else if (id == 2) {
+							if (coinsPerClick + 1 <= 100) {
+								SetCoinsPerClick(coinsPerClick + 1);
+								QuestComplete(id,"+1 Coin per Click!");
+								SetCookieString("quests",quests,720);
+							} else {
+								coinExchange = QuestToMoney(id);
+								SetCoins(coinExchange);
+								QuestComplete(id,"+" + NumberToString(coinExchange) + " Coins!");
+								SetCookieString("quests",quests,720);
+							}
+						} else if (id >= 3) {
+							if (RandInt(0,2) == 0) {
+								if (cratePrice - 1 >= 5) {
+									cratePrice--;
+									UpdateCratePrice();
+									QuestComplete(id,"-1 Coin Crate Price!");
+									SetCookie("cratePrice",cratePrice,720);
+								} else {
+									coinExchange = QuestToMoney(id);
+									SetCoins(coinExchange);
+									QuestComplete(id,"+" + NumberToString(coinExchange) + " Coins!");
+								}
+							} else {
+								if (marketRecoveryBoost + 1000 <= 50000) {
+									marketRecoveryBoost += 1000;
+									QuestComplete(id,"+2% Sell Recovery Speed!");
+									SetCookie("marketRecoveryBoost",marketRecoveryBoost,720);
+								} else {
+									coinExchange = QuestToMoney(id);
+									SetCoins(coinExchange);
+									QuestComplete(id,"+" + NumberToString(coinExchange) + " Coins!");
+								}
+							}
+						}
+						for (var i = 0; i < quests[id].length; i++) { // Actually trade in the items
+							for (var j = 0; j < items[quests[id][i][0]].length; j++) {
+								items[quests[id][i][0]][j][1] -= quests[id][i][1];
+							}
+						}
+						UpdateInventory();
+					} else {
+						badId = id;
+						UpdateQuests(true);
+						setTimeout(UpdateQuests,70,false);
+					}
+				} else {
+					NoConsent();
+				}
+			}
+			
+			function CanTrade(id) {
+				failed = false;
+				failures = [false,false,false,false,false,false];
+				for (var i = 0; i < quests[id].length; i++) {
+					for (var j = 0; j < items[quests[id][i][0]].length; j++) {
+						if (items[quests[id][i][0]][j][1] < quests[id][i][1]) {
+							failed = true;
+							failures[quests[id][i][0]] = true;
+						}
+					}
+				}
+				if (failed == true) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+			
+			function GenerateQuest(id) {
+				tradeButtons[id].disabled = false;
+				quest = [];
+				requirements = RandInt(2,4);
+				progressionMultiplier = Math.floor(cratesOpened / 25000) + 0.5;
+				SetCookie("progressionMultiplier",progressionMultiplier,720);
+				quantityMod = 0;
+				if (requirements == 2) {
+					modifier = 1;
+				} else {
+					modifier = 0;
+				}
+				if (id == 0 && requirements == 3) {
+					quantityMod = -1;
+				} else if (id == 1) {
+					modifier -= 1;
+				} else if (id == 2) {
+					modifier -= 3;
+				} else if (id >= 3) {
+					wheels[id - 3].src = "wheel0.png";
+					modifier -= 3;
+					quantityMod = RandInt(0,1);
+					questTicks[id - 3] = 40000;
+					setTimeout(QuestTick,40000,id)
+				}
+				for (var i = 0; i < requirements; i++) {
+					// Scaling
+					questRarity = i + requirements + modifier;
+					questQuantityId = questRarity + quantityMod;
+					if (requirements == 2) {
+						questQuantityId += RandInt(0,2);
+					}
+					if (questRarity == 0 && questQuantityId >= 3) {
+						questQuantityId = 2;
+					}
+					if (id == 0) {
+						theActualQuantity = Math.floor(tradeQuestQuantities[questQuantityId] * (progressionMultiplier * 2));
+					} else if (id == 1) {
+						theActualQuantity = Math.floor(tradeQuestQuantities[questQuantityId] * (progressionMultiplier * 1.1));
+					} else if (id == 2){
+						theActualQuantity = Math.floor(tradeQuestQuantities[questQuantityId] * (progressionMultiplier + 1));
+					} else {
+						theActualQuantity = Math.floor(tradeQuestQuantities[questQuantityId] * (progressionMultiplier * 0.6));
+					}
+					quest.splice(i,0,[questRarity,theActualQuantity]);
+				}
+				// Save
+				quests.splice(id,1,quest)
+				SetCookieString("quests",quests,720);
+				SetCookieString("questTicks",questTicks,720);
+				UpdateQuests(false);
+			}
+			
+			function QuestComplete(id,message) {
+				if (pendingRemoval == -1) {
+					if (bypassRewardMessage == false || id > 2) {
+						questTexts[id].innerHTML = "<span class = \"black\">" + message + "</span>";
+						tradeButtons[id].disabled = true;
+					}
+					if (id < 3) {
+						if (bypassRewardMessage == false) {
+							setTimeout(GenerateQuest,1000,id);
+						} else {
+							GenerateQuest(id);
+						}
+					} else {
+						pendingRemoval = id;
+						wheels[id - 3].style.display = "none";
+						specialTimeout = setTimeout(RemoveQuest,1000,id);
+					}
+				} else {
+					RemoveQuest(quests.length - 1);
+					RemoveQuest(quests.length - 1);
+					clearTimeout(specialTimeout);
+					questTexts[3].innerHTML = "<span class = \"black\">" + message + "</span>";
+					tradeButtons[3].disabled = true;
+					wheels[0].style.display = "none";
+					pendingRemoval = -1;
+					setTimeout(UpdateQuests,1000,false);
+				}
+			}
+			
+			function QuestToMoney(id) {
+				totalValue = 0;
+				for (var i = 0; i < quests[id].length; i++) {
+					totalValue += sellPrices[quests[id][i][0]] * quests[id][i][1];
+				}
+				return Math.floor(totalValue * ((parseFloat(Math.random().toFixed(1))) + 0.5) / 10) * 10;
+			}
+			
+			function UpdateInventory() {
+				listHTML = "";
+				if (qazwsxCount > 0) {
+					listHTML += "<li style = \"border-left: 2px solid brown;\">May Pencil Holder: <b>" + NumberToString(qazwsxCount) + "</b></li>";
+				}
+				for(var i = 0; i < items.length; i++) {
+					for(var j = 0; j < items[i].length; j++) {
+						if (i == 0) {
+							colourBorder = "yellow";
+						} else if (i == 1) {
+							colourBorder = "brown";
+						} else if (i == 2) {
+							colourBorder = "purple";
+						} else if (i == 3) {
+							colourBorder = "blue";
+						} else if (i == 4) {
+							colourBorder = "green";
+						} else {
+							colourBorder = "black";
+						}
+						listHTML += "<li style = \"border-left: 2px solid " + colourBorder + "\">" + items[i][j][0] + ": <b>" + NumberToString(items[i][j][1]) + "</b></li>";
+					}
+				}
+				inventoryListHTML.innerHTML = listHTML;
+				SetCookieString("items",items,720);
+				// Oh, tell you what, let's sort out those rewards too
+				failure = false;
+				if (failure == false) {
+					for(var i = 0; i < items[3].length; i++) { // All Rares
+						if (items[3][i][1] < 1) {
+							failure = true;
+							break;
+						}
+					}
+					if (failure == false) {
+						rewardProgress[3] = true;
+						chapterButtons[3].disabled = false;
+					}
+				}
+				if (failure == false) { // All Epics
+					for(var i = 0; i < items[2].length; i++) {
+						if (items[2][i][1] < 1) {
+							failure = true;
+							break;
+						}
+					}
+					if (failure == false) {
+						rewardProgress[4] = true;
+						chapterButtons[4].disabled = false;
+					}
+				}
+				if (failure == false) { // All Legendaries
+					for(var i = 0; i < items[1].length; i++) {
+						if (items[1][i][1] < 1) {
+							failure = true;
+							break;
+						}
+					}
+					if (failure == false) {
+						rewardProgress[5] = true;
+						chapterButtons[5].disabled = false;
+					}
+				}
+				if (failure == false) { // x1 Everything
+					for(var i = 0; i < items[0].length; i++) {
+						if (items[0][i][1] < 1) {
+							failure = true;
+							break;
+						}
+					}
+					if (failure == false) {
+						rewardProgress[6] = true;
+						chapterButtons[6].disabled = false;
+					}
+				}
+				if (failure == false) { // x5 Everything
+					for(var i = 0; i < items[0].length; i++) {
+						if (items[0][i][1] < 5) {
+							failure = true;
+							break;
+						}
+					}
+					if (failure == false) {
+						rewardProgress[7] = true;
+						chapterButtons[7].disabled = false;
+					}
+				}
+				if (failure == false) { // x10 Everything
+					for(var i = 0; i < items[0].length; i++) {
+						if (items[0][i][1] < 10) {
+							failure = true;
+							break;
+						}
+					}
+					if (failure == false) {
+						rewardProgress[8] = true;
+						chapterButtons[8].disabled = false;
+					}
+				}
+				if (failure == false) { // x100 Everything
+					for(var i = 0; i < items[0].length; i++) {
+						if (items[0][i][1] < 100) {
+							failure = true;
+							break;
+						}
+					}
+					if (failure == false) {
+						rewardProgress[9] = true;
+						chapterButtons[9].disabled = false;
+					}
+				}
+				if (failure == false) { // x1,000 Everything
+					for(var i = 0; i < items[0].length; i++) {
+						if (items[0][i][1] < 1000) {
+							failure = true;
+							break;
+						}
+					}
+					if (failure == false) {
+						rewardProgress[10] = true;
+						chapterButtons[10].disabled = false;
+					}
+				}
+				if (failure == false) { // x10,000 Everything
+					for(var i = 0; i < items[0].length; i++) {
+						if (items[0][i][1] < 10000) {
+							failure = true;
+							break;
+						}
+					}
+					if (failure == false) {
+						rewardProgress[11] = true;
+						chapterButtons[11].disabled = false;
+						if (postGameStage == -1 && waitingToReveal == false) {
+							setTimeout(RevealReward,3000);
+							waitingToReveal = true;
+						}
+					}
+				}
+				SetCookieString("rewardProgress",rewardProgress,720);
+				
+				// Post-Game
+				if (postGameStage >= 0) {
+					readyToUnlock = true;
+					for(var i = 0; i < items.length; i++) {
+						for(var j = 0; j < items[i].length; j++) {
+							if (items[i][j][1] < endings[postGameStage][1]) {
+								readyToUnlock = false;
+								break;
+							}
+						}
+					}
+					if (readyToUnlock == true) {
+						postGameButtonHTML.disabled = false;
+					}
+				}
+			}
+			
+			function UpdateQuests(flash) {
+				for (var i = 0; i < quests.length; i++) {
+					questWriteUp = "";
+					for (var j = 0; j < quests[i].length; j++) {
+						if (flash == false) {
+							questWriteUp += "<span class = \""+ rarityColours[quests[i][j][0]] + "\">" + NumberToString(quests[i][j][1]) + "x " + rarityPlurals[quests[i][j][0]] + "</span>";
+						} else {
+							if (failures[quests[i][j][0]] == true && i == badId) {
+								questWriteUp += "<span style = \"color: red;\">" + NumberToString(quests[i][j][1]) + "x " + rarityPlurals[quests[i][j][0]] + "</span>";
+							} else {
+								questWriteUp += "<span class = \""+ rarityColours[quests[i][j][0]] + "\">" + NumberToString(quests[i][j][1]) + "x " + rarityPlurals[quests[i][j][0]] + "</span>";
+							}
+						}
+						if (j < quests[i].length - 1) {
+							questWriteUp += ", "
+						}
+					}
+					questTexts[i].innerHTML = questWriteUp;
+				}
+				if (quests.length >= 4) {
+					wheels[0].style.display = "block";
+					wheels[0].src = EvaluateWheel(3);
+					tradeButtons[3].style.display = "block";
+					tradeButtons[3].disabled = false;
+					if (quests.length == 5) {
+						wheels[1].style.display = "block";
+						wheels[1].src = EvaluateWheel(4);
+						tradeButtons[4].style.display = "block";
+						tradeButtons[4].disabled = false;
+					} else {
+						wheels[1].style.display = "none";
+						tradeButtons[4].style.display = "none";
+						questTexts[4].innerHTML = "<span class = \"darkpurple\"><i>...you'll attract some more trade-ins...</i></span>";
+					}
+				} else {
+					wheels[0].style.display = "none";
+					wheels[1].style.display = "none";
+					tradeButtons[3].style.display = "none";
+					tradeButtons[4].style.display = "none";
+					questTexts[3].innerHTML = "<span class = \"darkpurple\"><i>Maybe with enough crates...</i></span>";
+					questTexts[4].innerHTML = "<span class = \"darkpurple\"><i>...you'll attract some more trade-ins...</i></span>";
+				}
+			}
+			
+			function RemoveQuest(id) {
+				pendingRemoval = -1;
+				quests.splice(id,1);
+				if (id >= 3) {
+					questTicks.splice(id - 3,1);
+				}
+				UpdateQuests(false);
+			}
+			
+			function QuestTick(id) {
+				if (questTicks[id - 3] > 0) {
+					questTicks[id - 3] -= 1000;
+					wheels[id - 3].src = EvaluateWheel(id);
+					setTimeout(QuestTick,1000,id);
+				} else {
+					RemoveQuest(id);
+					if (quests.length == 4) {
+						setTimeout(QuestTick,1000,id);
+					}
+				}
+			}
+			
+			function EvaluateWheel(id) {
+				if (questTicks[id - 3] <= 40000 && questTicks[id - 3] > 30000) {
+					return "wheel0.png";
+				} else if (questTicks[id - 3] <= 30000 && questTicks[id - 3] > 20000) {
+					return "wheel1.png";
+				} else if (questTicks[id - 3] <= 20000 && questTicks[id - 3] > 10000) {
+					return "wheel2.png";
+				} else {
+					return "wheel3.png";
+				}
+			}
+			
+			function LoadShop() {
+				// Dropdown
+				dropdownString = "";
+				for (var i = 0; i < items.length; i++) {
+					if (sellModifiers[i] < 1) {
+						sellModifier = NumberToString(sellPrices[i] * sellModifiers[i]) + " Coins (-";
+						percentage = (100 - (sellModifiers[i] * 100)).toFixed(2)
+						dropdownString += "<option value = \"" + rarities[i] + "\" disabled = \"true\">" + rarities[i] + ", " + sellModifier + parseInt(percentage) + "%)</option>"
+					} else {
+						sellModifier = NumberToString(sellPrices[i] * sellModifiers[i]) + " Coins (";
+						percentage = (sellModifiers[i] * 100).toFixed(2)
+						dropdownString += "<option value = \"" + rarities[i] + "\" disabled = \"true\">" + rarities[i] + ", " + sellModifier + parseInt(percentage) + "%)</option>"
+					}
+					for (var j = 0; j < items[i].length; j++) {
+						dropdownString += "<option value = \"" + [i,j] + "\">" + items[i][j][0] + "</option>"
+					}
+				}
+				saveIndex = sellDropdownHTML.selectedIndex;
+				sellDropdownHTML.innerHTML = dropdownString;
+				sellDropdownHTML.selectedIndex = saveIndex;
+				UpdateShop();
+			}
+			
+			function UpdateShop() {
+				if (sellDropdownHTML.value == "") {
+					indexPair = [1,1];
+					sellDropdownHTML.selectedIndex = 1;
+				} else {
+					indexPair = [sellDropdownHTML.value[0],sellDropdownHTML.value[2]];
+				}
+				
+				if (indexPair[0] == 5) {
+					trueValue = items[indexPair[0]][indexPair[1]][1].toString();
+					uncommonSellMax = parseInt(trueValue.substring(0,trueValue.length - 1) + "0",10);
+					sellCounterHTML.max = uncommonSellMax;
+					sellCounterHTML.value = uncommonSellMax;
+					sellCounterHTML.step = 10;
+				} else {
+					sellCounterHTML.max = items[indexPair[0]][indexPair[1]][1];
+					sellCounterHTML.value = sellCounterHTML.max;
+					sellCounterHTML.step = 1;
+				}
+				
+				UpdateSellPrice();
+			}
+			
+			function UpdateSellPrice() {
+				sellPriceHTML.innerHTML = NumberToString(Math.floor((sellPrices[indexPair[0]] * sellModifiers[indexPair[0]]) * parseInt(sellCounter.value,10))) + " Coins";
+			}
+			
+			function LoadRewards() {
+				for(var i = 0; i < rewardProgress.length; i++) {
+					if (rewardProgress[i] == true) {
+						chapterButtons[i].disabled = false;
+					}
+				}
+				if (postGameStage > -1) {
+					postGameStage--;
+					RevealReward();
+					
+					postGameButtonHTML.disabled = true;
+				}
+			}
+			
+			function UpdateCustomSell() {
+				if (parseInt(customCounterHTML.value,10) == 1) {
+					customOpenButtonHTML.innerHTML = "<b>Open " + NumberToString(parseInt(customCounterHTML.value,10)) + " Crate</b>"
+				} else {
+					customOpenButtonHTML.innerHTML = "<b>Open " + NumberToString(parseInt(customCounterHTML.value,10)) + " Crates</b>"
+				}
+			}
+			
+			function PlayReward(num) {
+				if (consent == true) {
+					// Make sure the user is allowed to listen
+					canPlay = false;
+					if (rewardProgress[num] == true || num >= 12) {
+						canPlay = true;
+					}
+
+					if (audioPlaying == true) {
+						audio.pause();
+						audioPlaying = false;
+					}
+					if (audioPlaying == false && canPlay == true) {
+						if (num <= 11) {
+							audio = new Audio("pizza" + num + ".wav");
+						} else {
+							SetCoinsPerClick(coinsPerClick + 200);
+							audio = new Audio("end" + (num - 12) + ".wav");
+							postGameButtonHTML.disabled = true;
+							if (waitingToReveal == false && postGameStage < 8) {
+								setTimeout(RevealReward,endings[postGameStage][2]);
+								waitingToReveal = true;
+							}
+						}
+						audio.play();
+						audioPlaying = true;
+					}
+				} else {
+					NoConsent();
+				}
+			}
+			
+			function StopPlayback() {
+				if (audioPlaying == true) {
+					audio.pause();
+					audioPlaying = false;
+				}
+			}
+			
+			function RevealReward() {
+				waitingToReveal = false;
+				postGameStage++;
+				SetCookie("postGameStage",postGameStage,720);
+				
+				postGameButtonHTML.style.display = "initial";
+				postGameButtonHTML.innerHTML = "<b>" + endings[postGameStage][0] + "</b>";
+				
+				if (postGameStage > 0) {
+					postGameTextHTML.style.display = "initial";
+					postGameTextHTML.innerHTML = "<b>x" + NumberToString(endings[postGameStage][1]) + " Everything</b>";
+				}
+			}
+			
+			function CheckCoinsPerSecond() {
+				UpdateCoinsPerSecond(coinsPerSecond);
+				coinsPerSecond = 0;
+				setTimeout(CheckCoinsPerSecond,1000);
+			}
+			
+			function UpdateStats(stat) {
+				if (stat == "rarities" || stat == "all") {
+					mythicsCollectedHTML.innerHTML = "Mythics Collected: <b>" + NumberToString(raritiesCollected[0]) + "</b>";
+					legendariesCollectedHTML.innerHTML = "Legendaries Collected: <b>" + NumberToString(raritiesCollected[1]) + "</b>";
+					epicsCollectedHTML.innerHTML = "Epics Collected: <b>" + NumberToString(raritiesCollected[2]) + "</b>";
+					raresCollectedHTML.innerHTML = "Rares Collected: <b>" + NumberToString(raritiesCollected[3]) + "</b>";
+					uncommonsCollectedHTML.innerHTML = "Uncommons Collected: <b>" + NumberToString(raritiesCollected[4]) + "</b>";
+					commonsCollectedHTML.innerHTML = "Commons Collected: <b>" + NumberToString(raritiesCollected[5]) + "</b>";
+				}
+				if (stat == "coinsEarned" || stat == "all") {
+					coinsEarnedHTML.innerHTML = "Coins Earned: <b>" + NumberToString(coinsEarned) + "</b>";
+				}
+				if (stat == "cratesOpened" || stat == "all") {
+					cratesOpenedHTML.innerHTML = "Crates Opened: <b>" + NumberToString(cratesOpened) + "</b>";
+				}
+				if (stat == "itemsObtained" || stat == "all") {
+					itemsObtainedHTML.innerHTML = "Items Obtained: <b>" + NumberToString(itemsObtained) + "</b>";
+				}
+				if (stat == "mostCratesOpened" || stat == "all") {
+					mostCratesOpenedHTML.innerHTML = "Most Crates Opened: <b>" + NumberToString(mostCratesOpened) + "</b>";
+				}
+				if (stat == "sessionsPlayed" || stat == "all") {
+					sessionsPlayedHTML.innerHTML = "Sessions Played: <b>" + NumberToString(sessionsPlayed) + "</b>";
+				}
+				if (stat == "timePlayed" || stat == "all") {
+					timePlayedHTML.innerHTML = "Time Played: <b>" + CalculateTimePlayed() + "</b>";
+				}
+			}
+			
+			function UpdateTimePlayed() {
+				timePlayed++;
+				if (consent == true) {
+					SetCookie("timePlayed",timePlayed,720);
+					UpdateStats("timePlayed");
+				}
+				setTimeout(UpdateTimePlayed,1000);
+			}
+			
+			function CalculateTimePlayed() {
+				if (timePlayed >= 60 && timePlayed < 3600) {
+					return Math.floor(timePlayed / 60) + "m";
+				} else if (timePlayed >= 3600 && timePlayed < 86400) {
+					return Math.floor(timePlayed / 3600) + "h";
+				} else if (timePlayed >= 86400) {
+					return Math.floor(timePlayed / 86400) + "d";
+				} else {
+					return timePlayed + "s"
+				}
+			}
+			
+			function ToggleAutoClick() {
+				if (autoClickerHTML.checked == true) {
+					Click(true);
+				} else {
+					clearTimeout(autoTimer);
+				}
+			}
+			
+			function ToggleAutoBuy() {
+				if (autoBuyHTML.checked == true) {
+					autoBuy = true;
+					BuyCrate();
+				} else {
+					autoBuy = false;
+				}
+				SetCookie("autoBuy",autoBuy,720);
+			}
+			
+			function ToggleBypassRewardMessage() {
+				if (bypassRewardMessageHTML.checked == true) {
+					bypassRewardMessage = true;
+				} else {
+					bypassRewardMessage = false;
+				}
+				SetCookie("bypassRewardMessage",bypassRewardMessage,720);
+			}
+			
+			function NumberToString(num) {
+				newString = "";
+				stringNum = num.toString();
+				counter = 0;
+				for(var i = stringNum.length - 1; i >= 0; i--) {
+					if (counter % 3 == 0 && counter > 0) {
+						newString = "," + newString
+					}
+					if (stringNum[i] == ".") {
+						newString = stringNum;
+						break;
+					}
+					newString = stringNum[i] + newString;
+					counter++;
+				}
+				return newString;
+			}
+			
+			function StringToBool(string) {
+				if (string == "true" || string == true) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			
+			function SetCrates(newNumberOfCrates) {
+				if (newNumberOfCrates > numberofCrates) {
+					crateRedemption += newNumberOfCrates - numberofCrates;
+					cratesSinceLastQuest += newNumberOfCrates - numberofCrates;
+				}
+				
+				numberofCrates = newNumberOfCrates;
+				SetCookie("crateRedemption",crateRedemption,720);
+				SetCookie("numberofCrates",numberofCrates,720);
+				
+				if (numberofCrates >= 500000000) {
+					openCratesButtonHTML.innerHTML = "<b>Open 500 Million Crates</b>"
+				} else {
+					openCratesButtonHTML.innerHTML = "<b>Open All Crates</b>"
+				}
+				
+				while (crateRedemption >= marketRecoveryTarget) {
+					crateRedemption -= marketRecoveryTarget;
+					for(var i = 0; i < sellModifiers.length; i++) {
+						if (parseInt(sellModifiers[i]) + 0.05 <= 1) {
+							sellModifier = parseFloat(sellModifiers[i] + 0.05).toFixed(2);
+							sellModifiers[i] = parseFloat(sellModifier);
+							LoadShop();
+						}
+					}
+				}
+				
+				if (cratesSinceLastQuest >= cratesUntilNextQuest) {
+					cratesSinceLastQuest = 0;
+					cratesUntilNextQuest = RandInt(10000 * progressionMultiplier,100000 * progressionMultiplier);
+					if (quests.length < 5) {
+						GenerateQuest(quests.length);
+					}
+				}
+				
+				SetCookie("cratesUntilNextQuest",cratesUntilNextQuest,720);
+				SetCookie("crateRedemption",crateRedemption,720);
+				SetCookieString("sellModifiers",sellModifiers,720);
+			}
+			
+			function SetCratePrice(newCratePrice) {
+				cratePrice = newCratePrice;
+				SetCookie("cratePrice",cratePrice,720);
+				UpdateCratePrice();
+			}
+			
+			function SetCoins(newNumberOfCoins) {
+				if (newNumberOfCoins > coins) {
+					coinsEarned += newNumberOfCoins - coins;
+				}
+				coins = newNumberOfCoins;
+				SetCookie("coins",coins,720);
+				SetCookie("coinsEarned",coinsEarned,720);
+				if (autoBuy == true) {
+					BuyAll();
+				}
+				UpdateStats("coinsEarned");
+			}
+			
+			function SetCoinsPerClick(newCoinsPerClick) {
+				coinsPerClick = newCoinsPerClick;
+				SetCookie("coinsPerClick",coinsPerClick,720);
+				UpdateCoinsPerClick();
+			}
+			
+			function SetCoinsPerSecond(newCoinsPerSecond) {
+				coinsPerSecond = newCoinsPerSecond;
+				UpdateCoinsPerSecond();
+			}
+			
+			
+			function UpdateCrates() {
+				availableCratesHTML.innerHTML = "Available Crates: <b>" + NumberToString(numberofCrates) + "</b>";
+				if (numberofCrates >= 500000000) {
+					openCratesButtonHTML.innerHTML = "<b>Open 500 Million Crates</b>"
+				} else {
+					openCratesButtonHTML.innerHTML = "<b>Open All Crates</b>"
+				}
+			}
+			
+			function UpdateCratePrice() {
+				crateBuyButtonHTML.innerHTML = "<b>Buy Crate [" + NumberToString(cratePrice) + " Coins]</b>"
+			}
+			
+			function UpdateCoins() {
+				numberOfCoinsHTML.innerHTML = "Coins: <b>" + NumberToString(coins) + "</b>";
+			}
+			
+			function UpdateCoinsPerClick() {
+				coinsPerClickHTML.innerHTML = "Coins/click: <b>" + NumberToString(coinsPerClick) + "</b>";
+			}
+			
+			function UpdateCoinsPerSecond() {
+				coinsPerSecondHTML.innerHTML = "Coins/second: <b>" + NumberToString(coinsPerSecond) + "</b>"
+			}
+			
+			function ResetProgress(stage) {
+				if (consent == true) {
+					if (stage == 0) {
+						if (confirm("Do you really want to reset your progress? This cannot be undone.")) {
+							ResetProgress(1)
+						}
+					} else {
+						DeleteAllCookies();
+						location.reload();
+					}
+				} else {
+					NoConsent();
+				}
+			}
+			
+			function Consent() {
+				consent = true;
+				SetCookie("consent",true,720);
+				SetCookieString("quests",quests,720);
+				consentButtonHTML.style.display = "none";
+				subtitleHTML.innerHTML = "Crates from the BTWiverse keep appearing. You have to do something. Open crates. Get items. Save the future.";
+				autoClickerHTML.checked = false;
+			}
+			
+			function NoConsent() {
+				subtitleHTML.innerHTML = "<b>MayCrate Redux uses cookies to store your inventory, trade-in info, coins, rewards, and a couple of other boring bits of data. Could you scroll down and accept cookies please?</b>";
+				subtitleHTML.style.color = "#c46abc";
+				autoClickerHTML.checked = false;
+				setTimeout(SubtitleFlashback,100);
+			}
+			
+			function SubtitleFlashback() {
+				subtitleHTML.style.color = "black";
+			}
+			
+			
+			function RandInt(lower,upper) { // Can be lower bound, can't be upper bound
+				return Math.floor(Math.random() * (upper - lower)) + lower;
+			}
+				
+			function SetCookie(cname,cvalue,exdays) {
+				if (consent == true) {
+					var d = new Date();
+					d.setTime(d.getTime() + (exdays*24*60*60*1000));
+					var expires = "expires="+ d.toUTCString();
+					document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+				}
+			}
+			
+			function GetCookie(cname) {
+				var name = cname + "=";
+				var decodedCookie = decodeURIComponent(document.cookie);
+				var ca = decodedCookie.split(';');
+				for(var i = 0; i <ca.length; i++) {
+					var c = ca[i];
+					while (c.charAt(0) == ' ') {
+						c = c.substring(1);
+					}
+					if (c.indexOf(name) == 0) {
+						return c.substring(name.length, c.length);
+					}
+				}
+				return "";
+			}
+			
+			function SetCookieString(cname,cvalue,exdays) {
+				var jsonString = JSON.stringify(cvalue);
+				SetCookie(cname,jsonString,exdays);
+			}
+			
+			function GetCookieString(cname) {
+				var jsonString = GetCookie(cname);
+				try {
+					returnValue = JSON.parse(jsonString);
+				} catch (SyntaxError) {
+					returnValue = "";
+				}
+				return returnValue;
+			}
+			
+			function DeleteAllCookies() {
+				var cookies = document.cookie.split(";");
+				for (var i = 0; i < cookies.length; i++) {
+					var cookie = cookies[i];
+					var eqPos = cookie.indexOf("=");
+					var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+					document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+				}
+			}
+			
+			document.addEventListener("load",OnLoad())
+			
+			// Hello! Me again. Enjoy looking at my code? I'm guessing not, but that's okay. If you have any REASONABLE suggestions (stuff like "There's a function for that!" or "These three lines can be done with this one
+			// line!") then I'd genuinely love to hear them. If you're going to tell me to rewrite everything, or that I shouldn't do xyz, or you just want to tell me that my code sucks, I won't listen and also do not care.
+			// This felt like an important PSA to put in here, but didn't want to sound really aggressive at the start of my code :P. Anyway, hope you had a good time. Have a good day!
+			
+		</script>
+		
+	</body>
+</html>
